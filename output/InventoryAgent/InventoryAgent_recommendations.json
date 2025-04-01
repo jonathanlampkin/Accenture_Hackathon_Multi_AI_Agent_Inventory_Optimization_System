@@ -1,0 +1,20 @@
+[
+  {
+    "timestamp": "2025-04-01T23:08:45.425207",
+    "recommendation": "20 restock_recommendations",
+    "confidence": 0.9,
+    "context": "restock_recommendations"
+  },
+  {
+    "timestamp": "2025-04-01T23:08:45.425559",
+    "recommendation": "20 reduce_stock_recommendations",
+    "confidence": 0.9,
+    "context": "reduce_stock_recommendations"
+  },
+  {
+    "timestamp": "2025-04-01T23:08:45.425885",
+    "recommendation": "20 reorder_point_adjustments",
+    "confidence": 0.9,
+    "context": "reorder_point_adjustments"
+  }
+]

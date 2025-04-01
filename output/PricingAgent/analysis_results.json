@@ -1,0 +1,68 @@
+{
+  "timestamp": "2025-04-01T23:08:36.430808",
+  "price_elasticity": {},
+  "competitor_analysis": {
+    "9502": {
+      "relative_price": 0.5630566441040257,
+      "price_position": "Discount",
+      "premium_percentage": 0,
+      "discount_percentage": 43.69433558959743
+    },
+    "2068": {
+      "relative_price": 0.5632931472081218,
+      "price_position": "Discount",
+      "premium_percentage": 0,
+      "discount_percentage": 43.670685279187815
+    },
+    "7103": {
+      "relative_price": 0.21365566808232606,
+      "price_position": "Discount",
+      "premium_percentage": 0,
+      "discount_percentage": 78.6344331917674
+    },
+    "5288": {
+      "relative_price": 0.8538268506900878,
+      "price_position": "Discount",
+      "premium_percentage": 0,
+      "discount_percentage": 14.61731493099122
+    },
+    "7212": {
+      "relative_price": 2.015482492607352,
+      "price_position": "Premium",
+      "premium_percentage": 101.54824926073518,
+      "discount_percentage": 0
+    },
+    "4809": {
+      "relative_price": 1.277217938345004,
+      "price_position": "Premium",
+      "premium_percentage": 27.721793834500396,
+      "discount_percentage": 0
+    },
+    "2127": {
+      "relative_price": 3.490063699513265,
+      "price_position": "Premium",
+      "premium_percentage": 249.0063699513265,
+      "discount_percentage": 0
+    },
+    "2914": {
+      "relative_price": 0.4708164642375169,
+      "price_position": "Discount",
+      "premium_percentage": 0,
+      "discount_percentage": 52.918353576248315
+    },
+    "7111": {
+      "relative_price": 6.481397970687712,
+      "price_position": "Premium",
+      "premium_percentage": 548.1397970687711,
+      "discount_percentage": 0
+    },
+    "3500": {
+      "relative_price": 0.8597943013360159,
+      "price_position": "Discount",
+      "premium_percentage": 0,
+      "discount_percentage": 14.020569866398414
+    }
+  },
+  "optimal_prices": {},
+  "price_performance": {}
+}

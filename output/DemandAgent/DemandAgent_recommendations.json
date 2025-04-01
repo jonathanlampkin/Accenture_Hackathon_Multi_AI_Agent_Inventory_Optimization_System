@@ -1,0 +1,26 @@
+[
+  {
+    "timestamp": "2025-04-01T23:08:45.942708",
+    "recommendation": "2220 trend_based_recommendations",
+    "confidence": 0.85,
+    "context": "trend_based_recommendations"
+  },
+  {
+    "timestamp": "2025-04-01T23:08:45.943129",
+    "recommendation": "677 seasonality_recommendations",
+    "confidence": 0.85,
+    "context": "seasonality_recommendations"
+  },
+  {
+    "timestamp": "2025-04-01T23:08:45.943464",
+    "recommendation": "1128 peak_demand_products",
+    "confidence": 0.85,
+    "context": "peak_demand_products"
+  },
+  {
+    "timestamp": "2025-04-01T23:08:45.944149",
+    "recommendation": "1092 declining_demand_products",
+    "confidence": 0.85,
+    "context": "declining_demand_products"
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "completed": true,
+  "output_directory": "/home/user/Accenture_Hackathon_Multi_AI_Agent_Inventory_Optimization_System/output/optimization_20250401_230823",
+  "optimization_metrics": {
+    "target": "balanced",
+    "iterations": 1,
+    "product_filter": "All",
+    "store_filter": "All"
+  }
+}

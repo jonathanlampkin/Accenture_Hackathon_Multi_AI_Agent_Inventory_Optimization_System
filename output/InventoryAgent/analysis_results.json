@@ -1,0 +1,123 @@
+{
+  "timestamp": "2025-04-01T23:08:24.513514",
+  "metrics": {
+    "total_stock": 5021190,
+    "avg_stock_per_product": 504.12391848465467,
+    "avg_stock_per_store": 502.12969244452637,
+    "avg_stockout_frequency": 9.4953,
+    "avg_lead_time": 15.05,
+    "avg_fulfillment_time": 7.5446,
+    "below_reorder_percentage": 10.5,
+    "capacity_utilization": 16.744235462328497,
+    "expiring_soon_percentage": 0,
+    "product_count": 6031,
+    "store_count": 99
+  },
+  "critical_products_count": 1050,
+  "surplus_products_count": 9815,
+  "reorder_recommendations_count": 9953,
+  "top_critical_products": [
+    {
+      "product_id": 1133,
+      "store_id": 82,
+      "current_stock": 1,
+      "reorder_point": 102,
+      "below_reorder_percent": 99.01960784313727,
+      "stockout_frequency": 19,
+      "lead_time": 28,
+      "risk_score": 19.990196078431374
+    },
+    {
+      "product_id": 4738,
+      "store_id": 28,
+      "current_stock": 1,
+      "reorder_point": 44,
+      "below_reorder_percent": 97.72727272727273,
+      "stockout_frequency": 19,
+      "lead_time": 27,
+      "risk_score": 19.977272727272727
+    },
+    {
+      "product_id": 5644,
+      "store_id": 71,
+      "current_stock": 2,
+      "reorder_point": 78,
+      "below_reorder_percent": 97.43589743589743,
+      "stockout_frequency": 19,
+      "lead_time": 5,
+      "risk_score": 19.974358974358974
+    },
+    {
+      "product_id": 9015,
+      "store_id": 65,
+      "current_stock": 12,
+      "reorder_point": 174,
+      "below_reorder_percent": 93.10344827586206,
+      "stockout_frequency": 19,
+      "lead_time": 3,
+      "risk_score": 19.93103448275862
+    },
+    {
+      "product_id": 1286,
+      "store_id": 62,
+      "current_stock": 17,
+      "reorder_point": 133,
+      "below_reorder_percent": 87.21804511278195,
+      "stockout_frequency": 19,
+      "lead_time": 17,
+      "risk_score": 19.872180451127818
+    }
+  ],
+  "top_surplus_products": [
+    {
+      "product_id": 3764,
+      "store_id": 75,
+      "current_stock": 996,
+      "avg_daily_demand": 0.1,
+      "days_of_supply": 9960.0,
+      "max_reasonable_supply": 32,
+      "excess_percentage": 31025.0,
+      "excess_units": 992.8
+    },
+    {
+      "product_id": 1125,
+      "store_id": 32,
+      "current_stock": 993,
+      "avg_daily_demand": 0.1,
+      "days_of_supply": 9930.0,
+      "max_reasonable_supply": 32,
+      "excess_percentage": 30931.25,
+      "excess_units": 989.8
+    },
+    {
+      "product_id": 1189,
+      "store_id": 42,
+      "current_stock": 990,
+      "avg_daily_demand": 0.1,
+      "days_of_supply": 9900.0,
+      "max_reasonable_supply": 32,
+      "excess_percentage": 30837.5,
+      "excess_units": 986.8
+    },
+    {
+      "product_id": 1227,
+      "store_id": 6,
+      "current_stock": 988,
+      "avg_daily_demand": 0.1,
+      "days_of_supply": 9880.0,
+      "max_reasonable_supply": 32,
+      "excess_percentage": 30775.0,
+      "excess_units": 984.8
+    },
+    {
+      "product_id": 2843,
+      "store_id": 16,
+      "current_stock": 986,
+      "avg_daily_demand": 0.1,
+      "days_of_supply": 9860.0,
+      "max_reasonable_supply": 32,
+      "excess_percentage": 30712.5,
+      "excess_units": 982.8
+    }
+  ]
+}

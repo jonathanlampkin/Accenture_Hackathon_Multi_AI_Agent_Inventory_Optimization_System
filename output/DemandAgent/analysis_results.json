@@ -1,0 +1,215 @@
+{
+  "timestamp": "2025-04-01T23:08:26.418254",
+  "demand_patterns": {
+    "1000": {
+      "trend": "Increasing",
+      "volatility": "Medium",
+      "mean_demand": 237.33333333333334,
+      "max_demand": 261.0,
+      "min_demand": 206.0,
+      "last_demand": 245.0
+    },
+    "1001": {
+      "trend": "Increasing",
+      "volatility": "High",
+      "mean_demand": 234.33333333333334,
+      "max_demand": 479.0,
+      "min_demand": 8.0,
+      "last_demand": 479.0
+    },
+    "1003": {
+      "trend": "Stable",
+      "volatility": "Low",
+      "mean_demand": 400.0,
+      "max_demand": 400.0,
+      "min_demand": 400.0,
+      "last_demand": 400.0
+    },
+    "1005": {
+      "trend": "Stable",
+      "volatility": "Low",
+      "mean_demand": 245.0,
+      "max_demand": 245.0,
+      "min_demand": 245.0,
+      "last_demand": 245.0
+    },
+    "1006": {
+      "trend": "Stable",
+      "volatility": "Low",
+      "mean_demand": 137.0,
+      "max_demand": 137.0,
+      "min_demand": 137.0,
+      "last_demand": 137.0
+    },
+    "1007": {
+      "trend": "Stable",
+      "volatility": "Low",
+      "mean_demand": 459.0,
+      "max_demand": 459.0,
+      "min_demand": 459.0,
+      "last_demand": 459.0
+    },
+    "1008": {
+      "trend": "Stable",
+      "volatility": "High",
+      "mean_demand": 304.0,
+      "max_demand": 490.0,
+      "min_demand": 108.0,
+      "last_demand": 296.0
+    },
+    "1009": {
+      "trend": "Decreasing",
+      "volatility": "High",
+      "mean_demand": 84.0,
+      "max_demand": 186.0,
+      "min_demand": 15.0,
+      "last_demand": 51.0
+    },
+    "1010": {
+      "trend": "Stable",
+      "volatility": "Low",
+      "mean_demand": 78.0,
+      "max_demand": 78.0,
+      "min_demand": 78.0,
+      "last_demand": 78.0
+    },
+    "1013": {
+      "trend": "Increasing",
+      "volatility": "High",
+      "mean_demand": 336.5,
+      "max_demand": 463.0,
+      "min_demand": 210.0,
+      "last_demand": 463.0
+    }
+  },
+  "seasonality_factors": {
+    "8875": {
+      "monthly_factors": {
+        "1": 1.0
+      },
+      "peak_month": 1,
+      "low_month": 1,
+      "seasonality_strength": 0.0
+    },
+    "8844": {
+      "monthly_factors": {
+        "1": 1.0
+      },
+      "peak_month": 1,
+      "low_month": 1,
+      "seasonality_strength": 0.0
+    },
+    "6538": {
+      "monthly_factors": {
+        "1": 1.0
+      },
+      "peak_month": 1,
+      "low_month": 1,
+      "seasonality_strength": 0.0
+    },
+    "5381": {
+      "monthly_factors": {
+        "1": 1.0
+      },
+      "peak_month": 1,
+      "low_month": 1,
+      "seasonality_strength": 0.0
+    },
+    "7885": {
+      "monthly_factors": {
+        "1": 1.4849094567404428,
+        "7": 0.45271629778672035,
+        "10": 1.062374245472837
+      },
+      "peak_month": 1,
+      "low_month": 7,
+      "seasonality_strength": 1.0321931589537225
+    },
+    "9451": {
+      "monthly_factors": {
+        "1": 1.2477611940298508,
+        "2": 0.7522388059701492
+      },
+      "peak_month": 1,
+      "low_month": 2,
+      "seasonality_strength": 0.4955223880597015
+    },
+    "6717": {
+      "monthly_factors": {
+        "1": 0.7280701754385965,
+        "8": 1.2719298245614035
+      },
+      "peak_month": 8,
+      "low_month": 1,
+      "seasonality_strength": 0.5438596491228069
+    },
+    "9839": {
+      "monthly_factors": {
+        "1": 1.0
+      },
+      "peak_month": 1,
+      "low_month": 1,
+      "seasonality_strength": 0.0
+    },
+    "4919": {
+      "monthly_factors": {
+        "1": 0.7033492822966507,
+        "8": 1.0119617224880382,
+        "9": 1.2846889952153109
+      },
+      "peak_month": 9,
+      "low_month": 1,
+      "seasonality_strength": 0.5813397129186602
+    },
+    "5146": {
+      "monthly_factors": {
+        "1": 1.0
+      },
+      "peak_month": 1,
+      "low_month": 1,
+      "seasonality_strength": 0.0
+    }
+  },
+  "price_elasticity": {
+    "2868": {
+      "elasticity": 0,
+      "elasticity_type": "Unknown"
+    },
+    "1174": {
+      "elasticity": 0,
+      "elasticity_type": "Unknown"
+    },
+    "7823": {
+      "elasticity": 0,
+      "elasticity_type": "Unknown"
+    },
+    "1210": {
+      "elasticity": 0,
+      "elasticity_type": "Unknown"
+    },
+    "8988": {
+      "elasticity": 0,
+      "elasticity_type": "Unknown"
+    },
+    "1912": {
+      "elasticity": 0,
+      "elasticity_type": "Unknown"
+    },
+    "2747": {
+      "elasticity": 0,
+      "elasticity_type": "Unknown"
+    },
+    "8497": {
+      "elasticity": 0,
+      "elasticity_type": "Unknown"
+    },
+    "4300": {
+      "elasticity": 0,
+      "elasticity_type": "Unknown"
+    },
+    "4012": {
+      "elasticity": 0,
+      "elasticity_type": "Unknown"
+    }
+  }
+}
