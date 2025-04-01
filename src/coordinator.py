@@ -30,7 +30,8 @@ class MultiAgentCoordinator:
     Manages the collaboration between specialized agents.
     """
     
-    def __init__(self, optimization_target='balanced', product_id=None, store_id=None, max_iterations=5, output_dir=None):
+    def __init__(self, optimization_target='balanced', product_id=None, store_id=None, 
+                 max_iterations=5, output_dir=None, use_gpu=False):
         """
         Initialize the coordinator with specialized agents.
         
@@ -40,11 +41,13 @@ class MultiAgentCoordinator:
             store_id: Optional specific store ID to focus on
             max_iterations: Maximum number of optimization iterations
             output_dir: Optional custom output directory
+            use_gpu: Whether to use GPU acceleration if available
         """
         self.optimization_target = optimization_target
         self.product_id = product_id
         self.store_id = store_id
         self.max_iterations = max_iterations
+        self.use_gpu = use_gpu
         
         # Set up output directory
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -55,25 +58,30 @@ class MultiAgentCoordinator:
         self.inventory_agent = InventoryAgent(
             optimization_weights=self._get_inventory_weights(),
             product_id=product_id,
-            store_id=store_id
+            store_id=store_id,
+            use_gpu=use_gpu
         )
         
         self.demand_agent = DemandAgent(
             product_id=product_id,
-            store_id=store_id
+            store_id=store_id,
+            use_gpu=use_gpu
         )
         
         self.pricing_agent = PricingAgent(
             optimization_weights=self._get_pricing_weights(),
             product_id=product_id,
-            store_id=store_id
+            store_id=store_id,
+            use_gpu=use_gpu
         )
         
         self.supply_chain_agent = SupplyChainAgent(
-            optimization_weights=self._get_inventory_weights()
+            optimization_weights=self._get_inventory_weights(),
+            use_gpu=use_gpu
         )
         
         logger.info(f"MultiAgentCoordinator initialized with target: {optimization_target}")
+        logger.info(f"GPU acceleration: {'Enabled' if use_gpu else 'Disabled'}")
         
         if product_id:
             logger.info(f"Product ID filter: {product_id}")

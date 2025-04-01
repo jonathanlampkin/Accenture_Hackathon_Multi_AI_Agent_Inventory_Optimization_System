@@ -23,10 +23,11 @@ from src.utils.visualizer import plot_inventory_levels, plot_stockout_risk, gene
 
 class InventoryAgent(BaseAgent):
     """
-    Agent responsible for inventory management and optimization.
+    Agent responsible for inventory management, optimization of stock levels,
+    reorder points, and minimizing stockouts while controlling inventory costs.
     """
     
-    def __init__(self, optimization_weights=None, product_id=None, store_id=None):
+    def __init__(self, optimization_weights=None, product_id=None, store_id=None, use_gpu=False):
         """
         Initialize the Inventory Management Agent.
         
@@ -34,8 +35,9 @@ class InventoryAgent(BaseAgent):
             optimization_weights: Optional dictionary with weights for optimization objectives
             product_id: Optional specific product ID to focus on
             store_id: Optional specific store ID to focus on
+            use_gpu: Whether to use GPU acceleration if available
         """
-        super().__init__("InventoryAgent")
+        super().__init__("InventoryAgent", use_gpu=use_gpu)
         
         # Initialize agent-specific state
         self.state.update({
@@ -339,18 +341,49 @@ class InventoryAgent(BaseAgent):
         merged_df['Avg_Daily_Demand'].fillna(0.1, inplace=True)
         merged_df['Std_Daily_Demand'].fillna(0.05, inplace=True)
         
-        # Calculate optimal reorder points
-        # Reorder Point = Lead Time Demand + Safety Stock
-        # Lead Time Demand = Average Daily Demand * Lead Time
-        # Safety Stock = Z-score * Standard Deviation of Demand * sqrt(Lead Time)
         # Z-score based on desired service level (use 1.96 for 97.5% service level)
         z_score = 1.96
         
-        merged_df['Lead_Time_Demand'] = merged_df['Avg_Daily_Demand'] * merged_df['Supplier Lead Time (days)']
-        merged_df['Safety_Stock'] = (z_score * merged_df['Std_Daily_Demand'] * 
-                                    np.sqrt(merged_df['Supplier Lead Time (days)']))
-        
-        merged_df['Optimal_Reorder_Point'] = merged_df['Lead_Time_Demand'] + merged_df['Safety_Stock']
+        # Use GPU acceleration if available
+        if self.use_gpu and self.device and self.device.type == "cuda":
+            try:
+                import torch
+                
+                self.log("Using GPU acceleration for reorder point calculations")
+                
+                # Convert to PyTorch tensors
+                avg_demand = torch.tensor(merged_df['Avg_Daily_Demand'].values, device=self.device)
+                std_demand = torch.tensor(merged_df['Std_Daily_Demand'].values, device=self.device)
+                lead_time = torch.tensor(merged_df['Supplier Lead Time (days)'].values, device=self.device)
+                
+                # Calculate on GPU
+                lead_time_demand = avg_demand * lead_time
+                safety_stock = z_score * std_demand * torch.sqrt(lead_time)
+                optimal_reorder_point = lead_time_demand + safety_stock
+                
+                # Move back to CPU and convert to numpy
+                lead_time_demand = lead_time_demand.cpu().numpy()
+                safety_stock = safety_stock.cpu().numpy()
+                optimal_reorder_point = optimal_reorder_point.cpu().numpy()
+                
+                # Update DataFrame
+                merged_df['Lead_Time_Demand'] = lead_time_demand
+                merged_df['Safety_Stock'] = safety_stock
+                merged_df['Optimal_Reorder_Point'] = optimal_reorder_point
+                
+            except (ImportError, Exception) as e:
+                self.log(f"Failed to use GPU acceleration: {e}. Falling back to CPU calculations.", level='warning')
+                # Fall back to CPU calculations
+                merged_df['Lead_Time_Demand'] = merged_df['Avg_Daily_Demand'] * merged_df['Supplier Lead Time (days)']
+                merged_df['Safety_Stock'] = (z_score * merged_df['Std_Daily_Demand'] * 
+                                            np.sqrt(merged_df['Supplier Lead Time (days)']))
+                merged_df['Optimal_Reorder_Point'] = merged_df['Lead_Time_Demand'] + merged_df['Safety_Stock']
+        else:
+            # Standard CPU calculations
+            merged_df['Lead_Time_Demand'] = merged_df['Avg_Daily_Demand'] * merged_df['Supplier Lead Time (days)']
+            merged_df['Safety_Stock'] = (z_score * merged_df['Std_Daily_Demand'] * 
+                                        np.sqrt(merged_df['Supplier Lead Time (days)']))
+            merged_df['Optimal_Reorder_Point'] = merged_df['Lead_Time_Demand'] + merged_df['Safety_Stock']
         
         # Round up reorder points to nearest integer
         merged_df['Optimal_Reorder_Point'] = np.ceil(merged_df['Optimal_Reorder_Point'])

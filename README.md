@@ -37,6 +37,45 @@ The system consists of the following components:
    python main.py
    ```
 
+## Docker Deployment
+
+You can run the system using Docker with GPU acceleration support:
+
+### Using Docker Compose
+
+1. Make sure you have Docker and Docker Compose installed. For GPU support, install NVIDIA Container Toolkit:
+   ```
+   sudo apt-get install -y nvidia-container-toolkit
+   sudo systemctl restart docker
+   ```
+
+2. Run with CPU only:
+   ```
+   docker-compose up inventory-optimization-cpu
+   ```
+
+3. Run with GPU acceleration (requires NVIDIA GPU and drivers):
+   ```
+   docker-compose up inventory-optimization-gpu
+   ```
+
+### Using Docker Directly
+
+1. Build the Docker image:
+   ```
+   docker build -t inventory-optimization .
+   ```
+
+2. Run with CPU only:
+   ```
+   docker run -v $(pwd)/output:/app/output -e USE_GPU=0 inventory-optimization
+   ```
+
+3. Run with GPU support:
+   ```
+   docker run --gpus all -v $(pwd)/output:/app/output -e USE_GPU=1 inventory-optimization
+   ```
+
 ## Command Line Options
 
 ```

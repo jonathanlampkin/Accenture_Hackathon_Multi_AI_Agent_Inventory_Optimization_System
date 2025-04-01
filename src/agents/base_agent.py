@@ -30,14 +30,16 @@ class BaseAgent(ABC):
     Base Agent class that all specialized agents will inherit from
     """
     
-    def __init__(self, name):
+    def __init__(self, name, use_gpu=False):
         """
         Initialize the base agent
         
         Args:
             name: Name of the agent
+            use_gpu: Whether to use GPU acceleration if available
         """
         self.name = name
+        self.use_gpu = use_gpu
         self.logger = logging.getLogger(f'Agent.{name}')
         self.messages = []
         self.state = {}
@@ -48,6 +50,21 @@ class BaseAgent(ABC):
         os.makedirs(self.output_dir, exist_ok=True)
         
         self.logger.info(f"{self.name} agent initialized")
+        if self.use_gpu:
+            self.logger.info("GPU acceleration enabled")
+            try:
+                # Only attempt to import and set up GPU if use_gpu is True
+                import torch
+                self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+                if self.device.type == "cuda":
+                    self.logger.info(f"Using GPU: {torch.cuda.get_device_name(0)}")
+                else:
+                    self.logger.warning("GPU requested but not available, falling back to CPU")
+            except ImportError:
+                self.logger.warning("PyTorch not installed, GPU acceleration disabled")
+                self.device = None
+        else:
+            self.device = None
     
     def log(self, message, level='info'):
         """

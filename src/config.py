@@ -4,7 +4,9 @@ Contains paths, parameters, feature flags, and optimization goals.
 """
 
 import os
+import argparse
 from pathlib import Path
+from datetime import datetime
 
 # Base directories
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -80,4 +82,48 @@ OPTIMIZATION_GOALS = {
         "stockout_cost": 0.4,
         "order_cost": 0.2
     }
-} 
+}
+
+# Environment variable for GPU usage
+USE_GPU = os.environ.get("USE_GPU", "0") == "1"
+
+# Default configuration
+DEFAULT_CONFIG = {
+    "simple_mode": False,
+    "optimization_target": "balanced",  # 'cost', 'availability', or 'balanced'
+    "product_id": None,
+    "store_id": None,
+    "iterations": 5,
+    "output_dir": "output",
+    "use_gpu": USE_GPU
+}
+
+def parse_args():
+    """Parse command line arguments and update config."""
+    parser = argparse.ArgumentParser(description='Multi-Agent Inventory Optimization System')
+    parser.add_argument('--simple-mode', action='store_true', help='Run in simple mode without advanced ML models')
+    parser.add_argument('--optimize-for', choices=['cost', 'availability', 'balanced'], default='balanced',
+                        help='Optimization target (default: balanced)')
+    parser.add_argument('--product-id', type=str, help='Focus on a specific product ID')
+    parser.add_argument('--store-id', type=str, help='Focus on a specific store ID')
+    parser.add_argument('--iterations', type=int, default=5, help='Number of optimization iterations')
+    parser.add_argument('--output-dir', type=str, default='output', help='Output directory for results')
+    
+    args = parser.parse_args()
+    
+    config = DEFAULT_CONFIG.copy()
+    config.update({
+        "simple_mode": args.simple_mode,
+        "optimization_target": args.optimize_for,
+        "product_id": args.product_id,
+        "store_id": args.store_id,
+        "iterations": args.iterations,
+        "output_dir": args.output_dir,
+        "use_gpu": USE_GPU
+    })
+    
+    return config
+
+def get_timestamp():
+    """Get current timestamp for file naming."""
+    return datetime.now().strftime("%Y%m%d_%H%M%S") 

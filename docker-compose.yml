@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  inventory-optimization-cpu:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./output:/app/output
+    environment:
+      - PYTHONUNBUFFERED=1
+      - USE_GPU=0
+    restart: unless-stopped
+    command: python3 main.py --simple-mode --optimize-for balanced --iterations 3
+
+  inventory-optimization-gpu:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./output:/app/output
+    environment:
+      - PYTHONUNBUFFERED=1
+      - USE_GPU=1
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    command: python3 main.py --simple-mode --optimize-for balanced --iterations 5
+
+volumes:
+  output: 
