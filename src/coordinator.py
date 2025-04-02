@@ -21,6 +21,7 @@ from src.agents.inventory_agent import InventoryAgent
 from src.agents.demand_agent import DemandAgent
 from src.agents.pricing_agent import PricingAgent 
 from src.agents.supply_chain_agent import SupplyChainAgent
+from src.agents.crew_agents import InventoryCrew
 
 logger = logging.getLogger("InventorySystem.Coordinator")
 
@@ -31,7 +32,7 @@ class MultiAgentCoordinator:
     """
     
     def __init__(self, optimization_target='balanced', product_id=None, store_id=None, 
-                 max_iterations=5, output_dir=None, use_gpu=False):
+                 max_iterations=5, output_dir=None, use_gpu=False, use_crewai=True):
         """
         Initialize the coordinator with specialized agents.
         
@@ -42,43 +43,36 @@ class MultiAgentCoordinator:
             max_iterations: Maximum number of optimization iterations
             output_dir: Optional custom output directory
             use_gpu: Whether to use GPU acceleration if available
+            use_crewai: Whether to use the new crewAI-based system
         """
         self.optimization_target = optimization_target
         self.product_id = product_id
         self.store_id = store_id
         self.max_iterations = max_iterations
         self.use_gpu = use_gpu
+        self.use_crewai = use_crewai
         
         # Set up output directory
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.output_dir = output_dir or os.path.join(config.OUTPUT_DIR, f"optimization_{timestamp}")
+        if output_dir is None:
+            self.output_dir = os.path.join('output', datetime.now().strftime('%Y%m%d_%H%M%S'))
+        else:
+            self.output_dir = output_dir
+            
         os.makedirs(self.output_dir, exist_ok=True)
         
-        # Initialize specialized agents
-        self.inventory_agent = InventoryAgent(
-            optimization_weights=self._get_inventory_weights(),
-            product_id=product_id,
-            store_id=store_id,
-            use_gpu=use_gpu
-        )
-        
-        self.demand_agent = DemandAgent(
-            product_id=product_id,
-            store_id=store_id,
-            use_gpu=use_gpu
-        )
-        
-        self.pricing_agent = PricingAgent(
-            optimization_weights=self._get_pricing_weights(),
-            product_id=product_id,
-            store_id=store_id,
-            use_gpu=use_gpu
-        )
-        
-        self.supply_chain_agent = SupplyChainAgent(
-            optimization_weights=self._get_inventory_weights(),
-            use_gpu=use_gpu
-        )
+        # Initialize agents based on the chosen system
+        if self.use_crewai:
+            self.crew = InventoryCrew(
+                data_path=os.path.join('data', 'processed'),
+                output_dir=self.output_dir
+            )
+            logger.info("Initialized crewAI-based inventory optimization system")
+        else:
+            self.inventory_agent = InventoryAgent(use_gpu=use_gpu)
+            self.demand_agent = DemandAgent(use_gpu=use_gpu)
+            self.pricing_agent = PricingAgent(use_gpu=use_gpu)
+            self.supply_chain_agent = SupplyChainAgent(use_gpu=use_gpu)
+            logger.info("Initialized traditional multi-agent system")
         
         logger.info(f"MultiAgentCoordinator initialized with target: {optimization_target}")
         logger.info(f"GPU acceleration: {'Enabled' if use_gpu else 'Disabled'}")
@@ -147,11 +141,57 @@ class MultiAgentCoordinator:
     
     def run_optimization(self):
         """
-        Run the multi-agent optimization process.
-        
-        Returns:
-            dict: Optimization results
+        Run the optimization process using either crewAI or traditional agents.
         """
+        try:
+            if self.use_crewai:
+                # Load and prepare data
+                data = self._load_data()
+                
+                # Run crewAI optimization
+                results = self.crew.run_optimization(data)
+                
+                # Save results
+                self._save_results(results)
+                
+                return results
+            else:
+                # Use traditional multi-agent approach
+                return self._run_traditional_optimization()
+                
+        except Exception as e:
+            logger.error(f"Error during optimization: {str(e)}", exc_info=True)
+            raise
+
+    def _load_data(self):
+        """Load and prepare data for optimization."""
+        try:
+            # Load your data here - implement based on your data structure
+            data = pd.read_csv(os.path.join('data', 'processed', 'inventory_data.csv'))
+            
+            if self.product_id:
+                data = data[data['product_id'] == self.product_id]
+            if self.store_id:
+                data = data[data['store_id'] == self.store_id]
+                
+            return data
+        except Exception as e:
+            logger.error(f"Error loading data: {str(e)}")
+            raise
+
+    def _save_results(self, results):
+        """Save optimization results to the output directory."""
+        try:
+            output_file = os.path.join(self.output_dir, 'optimization_results.json')
+            with open(output_file, 'w') as f:
+                json.dump(results, f, indent=4, default=self._json_serializable)
+            logger.info(f"Results saved to {output_file}")
+        except Exception as e:
+            logger.error(f"Error saving results: {str(e)}")
+            raise
+
+    def _run_traditional_optimization(self):
+        """Run optimization using the traditional multi-agent approach."""
         logger.info(f"Starting optimization process with {self.max_iterations} iterations")
         
         results = {

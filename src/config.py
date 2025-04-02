@@ -7,6 +7,7 @@ import os
 import argparse
 from pathlib import Path
 from datetime import datetime
+from typing import Dict, Any
 
 # Base directories
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -62,8 +63,9 @@ STOCKOUT_RISK_THRESHOLD = 0.15  # 15% chance of stockout
 MAX_ITERATIONS = 10
 COMMUNICATION_INTERVAL = 2
 
-# Feature flags
-USE_ADVANCED_MODELS = True  # Set to False for environments with limited dependencies
+# Global configuration flags
+USE_ADVANCED_MODELS = True
+USE_GPU = True
 
 # Optimization goals and weights
 OPTIMIZATION_GOALS = {
@@ -84,45 +86,81 @@ OPTIMIZATION_GOALS = {
     }
 }
 
-# Environment variable for GPU usage
-USE_GPU = os.environ.get("USE_GPU", "0") == "1"
-
-# Default configuration
-DEFAULT_CONFIG = {
-    "simple_mode": False,
-    "optimization_target": "balanced",  # 'cost', 'availability', or 'balanced'
-    "product_id": None,
-    "store_id": None,
-    "iterations": 5,
-    "output_dir": "output",
-    "use_gpu": USE_GPU
-}
-
-def parse_args():
-    """Parse command line arguments and update config."""
-    parser = argparse.ArgumentParser(description='Multi-Agent Inventory Optimization System')
-    parser.add_argument('--simple-mode', action='store_true', help='Run in simple mode without advanced ML models')
-    parser.add_argument('--optimize-for', choices=['cost', 'availability', 'balanced'], default='balanced',
-                        help='Optimization target (default: balanced)')
-    parser.add_argument('--product-id', type=str, help='Focus on a specific product ID')
-    parser.add_argument('--store-id', type=str, help='Focus on a specific store ID')
-    parser.add_argument('--iterations', type=int, default=5, help='Number of optimization iterations')
-    parser.add_argument('--output-dir', type=str, default='output', help='Output directory for results')
+def parse_args() -> Dict[str, Any]:
+    """
+    Parse command line arguments for the inventory optimization system.
+    
+    Returns:
+        Dict[str, Any]: Configuration dictionary
+    """
+    parser = argparse.ArgumentParser(
+        description="Multi-Agent Inventory Optimization System"
+    )
+    
+    parser.add_argument(
+        "--optimization-target",
+        type=str,
+        choices=["cost", "availability", "balanced"],
+        default="balanced",
+        help="Target optimization goal"
+    )
+    
+    parser.add_argument(
+        "--product-id",
+        type=str,
+        help="Specific product ID to focus on"
+    )
+    
+    parser.add_argument(
+        "--store-id",
+        type=str,
+        help="Specific store ID to focus on"
+    )
+    
+    parser.add_argument(
+        "--iterations",
+        type=int,
+        default=5,
+        help="Maximum number of optimization iterations"
+    )
+    
+    parser.add_argument(
+        "--output-dir",
+        type=str,
+        help="Custom output directory"
+    )
+    
+    parser.add_argument(
+        "--use-gpu",
+        action="store_true",
+        help="Enable GPU acceleration if available"
+    )
+    
+    parser.add_argument(
+        "--simple-mode",
+        action="store_true",
+        help="Run in simple mode without advanced ML models"
+    )
+    
+    parser.add_argument(
+        "--use-crewai",
+        action="store_true",
+        default=True,
+        help="Use the new crewAI-based system for optimization"
+    )
     
     args = parser.parse_args()
     
-    config = DEFAULT_CONFIG.copy()
-    config.update({
-        "simple_mode": args.simple_mode,
-        "optimization_target": args.optimize_for,
+    return {
+        "optimization_target": args.optimization_target,
         "product_id": args.product_id,
         "store_id": args.store_id,
         "iterations": args.iterations,
         "output_dir": args.output_dir,
-        "use_gpu": USE_GPU
-    })
-    
-    return config
+        "use_gpu": args.use_gpu,
+        "simple_mode": args.simple_mode,
+        "use_crewai": args.use_crewai
+    }
 
 def get_timestamp():
     """Get current timestamp for file naming."""
