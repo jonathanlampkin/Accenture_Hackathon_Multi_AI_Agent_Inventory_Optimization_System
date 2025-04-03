@@ -14,6 +14,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, "data")
 OUTPUT_DIR = os.path.join(BASE_DIR, "output")
 MODEL_DIR = os.path.join(BASE_DIR, "models")
+LOG_DIR = os.path.join(BASE_DIR, "logs")
 
 # Create data directory if it doesn't exist
 if not os.path.exists(DATA_DIR):
@@ -87,80 +88,56 @@ OPTIMIZATION_GOALS = {
 }
 
 def parse_args() -> Dict[str, Any]:
-    """
-    Parse command line arguments for the inventory optimization system.
+    """Parse command line arguments and return configuration"""
+    parser = argparse.ArgumentParser(description='Multi-Agent Inventory Optimization System')
     
-    Returns:
-        Dict[str, Any]: Configuration dictionary
-    """
-    parser = argparse.ArgumentParser(
-        description="Multi-Agent Inventory Optimization System"
-    )
+    parser.add_argument('--optimize-for', type=str, default='balanced',
+                      choices=['cost', 'service', 'balanced'],
+                      help='Optimization target (default: balanced)')
     
-    parser.add_argument(
-        "--optimization-target",
-        type=str,
-        choices=["cost", "availability", "balanced"],
-        default="balanced",
-        help="Target optimization goal"
-    )
+    # Updated LLM/Ollama arguments
+    parser.add_argument('--model-name', type=str, default=os.getenv('OLLAMA_MODEL', 'llama3'), # Default to llama3, allow env var override
+                      help='Ollama model name to use (e.g., llama3, mistral, codellama). Can also be set via OLLAMA_MODEL env var.')
     
-    parser.add_argument(
-        "--product-id",
-        type=str,
-        help="Specific product ID to focus on"
-    )
+    parser.add_argument('--ollama-base-url', type=str, default=os.getenv('OLLAMA_BASE_URL', 'http://localhost:11434'),
+                      help='Base URL for the Ollama server. Can also be set via OLLAMA_BASE_URL env var.')
     
-    parser.add_argument(
-        "--store-id",
-        type=str,
-        help="Specific store ID to focus on"
-    )
+    # Keep existing arguments
+    parser.add_argument('--use-gpu', action='store_true', default=os.getenv('USE_GPU', '0') == '1',
+                      help='Enable GPU support (primarily for Ollama). Can also be set via USE_GPU=1 env var.')
     
-    parser.add_argument(
-        "--iterations",
-        type=int,
-        default=5,
-        help="Maximum number of optimization iterations"
-    )
+    parser.add_argument('--output-dir', type=str, default='output',
+                      help='Directory to save results (default: output)')
     
-    parser.add_argument(
-        "--output-dir",
-        type=str,
-        help="Custom output directory"
-    )
+    parser.add_argument('--iterations', type=int, default=5,
+                      help='Number of optimization iterations (default: 5 - Note: This might not be directly used by CrewAI\'s process)')
     
-    parser.add_argument(
-        "--use-gpu",
-        action="store_true",
-        help="Enable GPU acceleration if available"
-    )
-    
-    parser.add_argument(
-        "--simple-mode",
-        action="store_true",
-        help="Run in simple mode without advanced ML models"
-    )
-    
-    parser.add_argument(
-        "--use-crewai",
-        action="store_true",
-        default=True,
-        help="Use the new crewAI-based system for optimization"
-    )
+    # Add data file argument
+    parser.add_argument('--data-file', type=str, default='data/inventory_data.csv', 
+                      help='Path to the inventory data CSV file (default: data/inventory_data.csv)')
     
     args = parser.parse_args()
     
-    return {
-        "optimization_target": args.optimization_target,
-        "product_id": args.product_id,
-        "store_id": args.store_id,
-        "iterations": args.iterations,
-        "output_dir": args.output_dir,
-        "use_gpu": args.use_gpu,
-        "simple_mode": args.simple_mode,
-        "use_crewai": args.use_crewai
-    }
+    # Convert to dictionary
+    config = vars(args)
+    
+    # Ensure output directory exists
+    Path(config['output_dir']).mkdir(parents=True, exist_ok=True)
+    
+    # No need to re-add env vars here as they are handled by `default` in argparse
+    
+    return config
+
+# Default configuration (less relevant now with argparse defaults)
+DEFAULT_CONFIG = {
+    'optimize_for': 'balanced',
+    'model_name': 'llama3',
+    'ollama_base_url': 'http://localhost:11434',
+    'use_gpu': False,
+    'output_dir': 'output',
+    'data_file': 'data/inventory_data.csv',
+    'iterations': 5
+}
 
 def get_timestamp():
     """Get current timestamp for file naming."""

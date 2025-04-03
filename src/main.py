@@ -11,6 +11,9 @@ import pandas as pd
 import logging
 import argparse
 from datetime import datetime
+import asyncio
+from pathlib import Path
+from typing import Dict, Any
 
 # Add the src directory to the path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -23,6 +26,21 @@ from src.agents import (
     PricingAgent,
     CoordinationAgent
 )
+
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
+
+from utils.error_handler import EnhancedErrorHandler
+from utils.task_manager import TaskManager
+from utils.knowledge_manager import KnowledgeManager
+from utils.memory_manager import MemoryManager
+from utils.monitoring import MonitoringSystem
+from utils.security import SecurityManager
+from utils.resource_manager import ResourceManager
+from utils.communication import CommunicationManager
+from utils.training import TrainingManager
+from utils.integration import IntegrationManager
 
 # Configure logging
 logging.basicConfig(
@@ -239,5 +257,135 @@ def main():
     
     logger.info("Multi-Agent Inventory Optimization System execution completed")
 
+# Load configuration
+def load_config() -> Dict[str, Any]:
+    config_file = Path("config.json")
+    if not config_file.exists():
+        raise FileNotFoundError("Configuration file not found")
+        
+    with open(config_file) as f:
+        return json.load(f)
+
+# Initialize managers
+config = load_config()
+
+error_handler = EnhancedErrorHandler()
+task_manager = TaskManager()
+knowledge_manager = KnowledgeManager()
+memory_manager = MemoryManager()
+monitoring_system = MonitoringSystem(
+    interval=config["monitoring"]["interval"],
+    metrics_dir=config["monitoring"]["metrics_dir"],
+    alerts=config["monitoring"]["alerts"]
+)
+security_manager = SecurityManager(
+    secret_key=config["security"]["secret_key"],
+    algorithm=config["security"]["algorithm"]
+)
+resource_manager = ResourceManager(
+    cpu_limit=config["resources"]["cpu_limit"],
+    memory_limit=config["resources"]["memory_limit"],
+    disk_limit=config["resources"]["disk_limit"],
+    network_limit=config["resources"]["network_limit"]
+)
+communication_manager = CommunicationManager()
+training_manager = TrainingManager(
+    batch_size=config["training"]["batch_size"],
+    epochs=config["training"]["epochs"],
+    learning_rate=config["training"]["learning_rate"],
+    validation_split=config["training"]["validation_split"]
+)
+integration_manager = IntegrationManager()
+
+# Create FastAPI app
+app = FastAPI(
+    title="Multi-AI Agent Inventory Optimization System",
+    description="A comprehensive system for optimizing inventory management using multiple AI agents",
+    version="1.0.0"
+)
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Health check endpoint
+@app.get("/api/v1/health")
+async def health_check():
+    return {
+        "status": "healthy",
+        "version": "1.0.0",
+        "timestamp": datetime.now().isoformat()
+    }
+
+# Error handler endpoint
+@app.get("/api/v1/errors")
+async def get_errors():
+    return error_handler.get_error_metrics()
+
+# Task manager endpoint
+@app.get("/api/v1/tasks")
+async def get_tasks():
+    return task_manager.get_task_metrics()
+
+# Knowledge manager endpoint
+@app.get("/api/v1/knowledge")
+async def get_knowledge():
+    return knowledge_manager.get_knowledge_metrics()
+
+# Memory manager endpoint
+@app.get("/api/v1/memory")
+async def get_memory():
+    return memory_manager.get_memory_metrics()
+
+# Monitoring system endpoint
+@app.get("/api/v1/monitoring")
+async def get_monitoring():
+    return monitoring_system.get_metrics()
+
+# Resource manager endpoint
+@app.get("/api/v1/resources")
+async def get_resources():
+    return resource_manager.get_resource_metrics()
+
+# Training manager endpoint
+@app.get("/api/v1/training")
+async def get_training():
+    return training_manager.get_training_metrics()
+
+# Integration manager endpoint
+@app.get("/api/v1/integration")
+async def get_integration():
+    return integration_manager.get_integration_metrics()
+
+# Start the system
+async def start_system():
+    # Start managers
+    monitoring_system.start()
+    resource_manager.start()
+    communication_manager.start()
+    integration_manager.start()
+    
+    # Start FastAPI server
+    config = uvicorn.Config(
+        app,
+        host=config["api"]["host"],
+        port=config["api"]["port"],
+        log_level="info"
+    )
+    server = uvicorn.Server(config)
+    await server.serve()
+
+# Main entry point
 if __name__ == "__main__":
-    main() 
+    try:
+        asyncio.run(start_system())
+    except KeyboardInterrupt:
+        logger.info("Shutting down system...")
+    except Exception as e:
+        logger.error(f"Error starting system: {str(e)}")
+        raise 
