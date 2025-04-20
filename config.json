@@ -1,0 +1,93 @@
+{
+  "version": "1.0.0",
+  "database": {
+    "url": "sqlite:///inventory_system.db",
+    "use_memory": true
+  },
+  "api": {
+    "host": "0.0.0.0",
+    "port": 8000,
+    "enable": true,
+    "debug": false
+  },
+  "agents": {
+    "model_name": "llama3",
+    "ollama_base_url": "http://localhost:11434",
+    "max_execution_time": 300,
+    "max_retries": 3,
+    "max_iterations": 15,
+    "max_rpm": 20
+  },
+  "paths": {
+    "data_dir": "data",
+    "output_dir": "output",
+    "model_dir": "models",
+    "log_dir": "logs"
+  },
+  "data": {
+    "inventory_file": "data/inventory_data.csv",
+    "demand_file": "data/demand_data.csv",
+    "pricing_file": "data/pricing_data.csv",
+    "supplier_file": "data/supplier_data.csv"
+  },
+  "analysis": {
+    "forecast_periods": 30,
+    "confidence_level": 0.95,
+    "seasonal_periods": [7, 30, 365],
+    "outlier_detection": true,
+    "test_size": 0.2
+  },
+  "optimization": {
+    "target": "balanced",
+    "max_iterations": 5,
+    "service_level": 0.95,
+    "holding_cost_rate": 0.25,
+    "ordering_cost": 100,
+    "stockout_cost": 50
+  },
+  "monitoring": {
+    "interval": 60,
+    "metrics_dir": "metrics",
+    "alerts": ["critical_inventory", "potential_stockout", "excess_inventory"],
+    "dashboard_enabled": true,
+    "log_performance": true
+  },
+  "security": {
+    "api_key_required": false,
+    "encrypt_output": false,
+    "access_control": {
+      "admin": ["all"],
+      "user": ["read", "analyze"],
+      "viewer": ["read"]
+    },
+    "secret_key": "default_secret_key_for_development",
+    "algorithm": "HS256"
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "inventory_system.log",
+    "rotate": true,
+    "max_size": 10485760,
+    "backup_count": 5
+  },
+  "notifications": {
+    "enable": false,
+    "channels": ["email", "slack"],
+    "thresholds": {
+      "stockout_risk": 0.8,
+      "excess_inventory": 0.7
+    }
+  },
+  "resources": {
+    "cpu_limit": 80,
+    "memory_limit": 80,
+    "disk_limit": 80,
+    "network_limit": 80
+  },
+  "training": {
+    "batch_size": 32,
+    "epochs": 10,
+    "learning_rate": 0.001,
+    "validation_split": 0.2
+  }
+} 

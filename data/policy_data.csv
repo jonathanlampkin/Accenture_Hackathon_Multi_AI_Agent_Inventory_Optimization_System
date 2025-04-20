@@ -1,0 +1,3 @@
+Product ID,Economic Order Quantity,Reorder Point,Safety Stock,Maximum Inventory Level,Policy Type
+101,500,150,100,1000,Standard
+102,300,100,75,750,Standard

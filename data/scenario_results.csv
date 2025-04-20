@@ -1,0 +1,5 @@
+Product ID,Scenario,Service Level,Total Cost,Stockouts
+101,Base Case,95.2,15000,2.1
+101,High Demand,92.1,16500,4.5
+102,Base Case,97.3,9500,0.8
+102,High Demand,94.6,10800,1.9

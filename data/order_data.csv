@@ -1,0 +1,4 @@
+Order Date,Product ID,Ordered Quantity,Fulfilled Quantity
+2023-04-15,101,500,500
+2023-04-16,102,300,275
+2023-04-17,101,250,250
