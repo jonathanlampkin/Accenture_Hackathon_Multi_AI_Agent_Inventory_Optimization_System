@@ -1,0 +1,42 @@
+===== INVENTORY OPTIMIZATION SYSTEM REPORT =====
+Generated on: 2025-04-20 19:21:30
+
+===== DATA SUMMARY =====
+Total products analyzed: 6065
+Total stores analyzed: 99
+Total demand records: 10000
+Total inventory records: 10000
+Total pricing records: 10000
+
+===== KEY FINDINGS =====
+
+Top 5 Products by Sales:
+Product 4584: 1987 units
+Product 7860: 1880 units
+Product 7694: 1824 units
+Product 1539: 1806 units
+Product 4555: 1686 units
+
+Top 5 Products with Highest Stockout Risk:
+Product 3917 at Store 75: Risk Score 2941.00
+Product 9309 at Store 19: Risk Score 2865.00
+Product 1133 at Store 82: Risk Score 1938.00
+Product 9188 at Store 77: Risk Score 1833.00
+Product 8789 at Store 1: Risk Score 1804.00
+
+Top 5 Products for Price Increase:
+Product 9625 at Store 88: Current $27.36, Competitor $50.94
+Product 4865 at Store 49: Current $21.77, Competitor $53.75
+Product 4460 at Store 74: Current $7.95, Competitor $84.42
+Product 5739 at Store 71: Current $26.24, Competitor $63.05
+Product 3249 at Store 31: Current $37.26, Competitor $92.64
+
+Top Reorder Point Adjustment Recommendations:
+Product 8187.0 at Store 93.0: Change from 90 to 470 units (422.1%)
+
+===== OVERALL RECOMMENDATIONS =====
+1. Implement the suggested reorder point adjustments to reduce stockout risk
+2. Apply pricing strategy recommendations to optimize revenue
+3. Focus inventory management attention on high-risk products
+4. Utilize demand forecasts for the next 30 days to plan purchasing
+5. Monitor pricing elasticity regularly to adjust pricing strategies

@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Low Stock Products",
+    "query": "SELECT p.id, p.sku, p.name, i.quantity, p.min_stock_level FROM products p JOIN inventories i ON p.id = i.product_id WHERE i.quantity <= p.min_stock_level AND p.is_active = true ORDER BY (i.quantity::float / p.min_stock_level) ASC LIMIT 100"
+  },
+  {
+    "name": "Recent Inventory Transactions",
+    "query": "SELECT it.id, it.inventory_id, it.transaction_type, it.quantity_change, it.reference_id, it.created_at, p.sku, p.name, l.code as location_code FROM inventory_transactions it JOIN inventories i ON it.inventory_id = i.id JOIN products p ON i.product_id = p.id JOIN locations l ON i.location_id = l.id ORDER BY it.created_at DESC LIMIT 100"
+  },
+  {
+    "name": "Product Inventory by Location",
+    "query": "SELECT p.id, p.sku, p.name, l.code as location_code, i.quantity, i.reserved_quantity, (i.quantity - i.reserved_quantity) as available_quantity FROM products p JOIN inventories i ON p.id = i.product_id JOIN locations l ON i.location_id = l.id WHERE p.is_active = true ORDER BY p.id, l.code"
+  },
+  {
+    "name": "Latest Forecasts by Product",
+    "query": "WITH latest_forecasts AS (SELECT product_id, MAX(created_at) as latest_date FROM forecasts GROUP BY product_id) SELECT f.id, f.product_id, p.sku, p.name, f.forecast_dates, f.forecast_values, f.created_at FROM forecasts f JOIN latest_forecasts lf ON f.product_id = lf.product_id AND f.created_at = lf.latest_date JOIN products p ON f.product_id = p.id ORDER BY p.sku"
+  },
+  {
+    "name": "Inventory Transactions by Type",
+    "query": "SELECT it.transaction_type, COUNT(*) as transaction_count, SUM(ABS(it.quantity_change)) as total_quantity FROM inventory_transactions it GROUP BY it.transaction_type ORDER BY transaction_count DESC"
+  },
+  {
+    "name": "Warehouse Inventory Status",
+    "query": "SELECT l.code as warehouse_code, l.name as warehouse_name, p.category, COUNT(DISTINCT p.id) as product_count, SUM(i.quantity) as total_quantity FROM locations l JOIN inventories i ON l.id = i.location_id JOIN products p ON i.product_id = p.id WHERE l.is_warehouse = true GROUP BY l.code, l.name, p.category ORDER BY l.code, p.category"
+  },
+  {
+    "name": "Products with Zero Inventory",
+    "query": "SELECT p.id, p.sku, p.name, p.category FROM products p LEFT JOIN (SELECT product_id, SUM(quantity) as total_quantity FROM inventories GROUP BY product_id) i ON p.id = i.product_id WHERE i.total_quantity IS NULL OR i.total_quantity = 0 AND p.is_active = true ORDER BY p.category, p.name"
+  },
+  {
+    "name": "Store Inventory by Category",
+    "query": "SELECT l.code as store_code, p.category, COUNT(DISTINCT p.id) as product_count, SUM(i.quantity) as total_quantity FROM locations l JOIN inventories i ON l.id = i.location_id JOIN products p ON i.product_id = p.id WHERE l.is_store = true GROUP BY l.code, p.category ORDER BY l.code, p.category"
+  },
+  {
+    "name": "Active Forecast Jobs",
+    "query": "SELECT fj.id, fj.product_id, p.sku, p.name, fj.job_id, fj.status, fj.created_at, fj.updated_at FROM forecast_jobs fj LEFT JOIN products p ON fj.product_id = p.id WHERE fj.status IN ('pending', 'running') ORDER BY fj.created_at DESC"
+  },
+  {
+    "name": "User Activity Audit",
+    "query": "SELECT al.id, u.username, al.action, al.entity_type, al.entity_id, al.ip_address, al.created_at FROM audit_logs al JOIN users u ON al.user_id = u.id ORDER BY al.created_at DESC LIMIT 100"
+  }
+] 

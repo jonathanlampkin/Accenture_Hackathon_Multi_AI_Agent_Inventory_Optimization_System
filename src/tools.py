@@ -10,7 +10,7 @@ import pandas as pd
 from typing import Dict, List, Any, Optional, Tuple
 # Import Pydantic v1 BaseModel
 from pydantic.v1 import BaseModel, Field, ValidationError
-from crewai_tools import BaseTool, tool
+from crewai.tools import BaseTool, tool
 from langchain_community.tools import DuckDuckGoSearchRun
 
 # Import forecasting tools

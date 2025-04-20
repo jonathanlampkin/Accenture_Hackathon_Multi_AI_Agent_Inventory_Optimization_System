@@ -27,6 +27,70 @@ except ImportError:
     logger.warning("Could not import tools module. Agent functionality may be limited.")
 
 
+class InventoryAgents:
+    """Class to create and manage inventory optimization agents."""
+    
+    def __init__(self, model_name='gpt-4-turbo-preview', verbose=False):
+        """
+        Initialize the inventory agents.
+        
+        Args:
+            model_name: Name of the language model to use
+            verbose: Whether to enable verbose output
+        """
+        self.model_name = model_name
+        self.verbose = verbose
+        self.llm_config = {
+            "temperature": 0.2,
+            "model": model_name,
+        }
+        logger.info(f"Initialized InventoryAgents with model: {model_name}")
+        
+    def create_forecast_agent(self) -> Agent:
+        """Create the demand forecasting agent."""
+        return Agent(
+            name="Demand Forecaster",
+            role="Demand Forecasting Specialist",
+            goal="Accurately predict future demand for products",
+            backstory="An expert in time series analysis and forecasting with deep knowledge of demand patterns and seasonality effects.",
+            verbose=self.verbose,
+            llm=self.llm_config
+        )
+    
+    def create_inventory_agent(self) -> Agent:
+        """Create the inventory optimization agent."""
+        return Agent(
+            name="Inventory Optimizer",
+            role="Inventory Optimization Specialist",
+            goal="Determine optimal inventory levels and reorder points",
+            backstory="An operations research expert specialized in inventory management with years of experience optimizing supply chains.",
+            verbose=self.verbose,
+            llm=self.llm_config
+        )
+    
+    def create_anomaly_agent(self) -> Agent:
+        """Create the anomaly detection agent."""
+        return Agent(
+            name="Anomaly Detector",
+            role="Data Anomaly Detection Specialist",
+            goal="Identify unusual patterns or outliers in inventory and demand data",
+            backstory="A data scientist with expertise in statistical analysis and pattern recognition who excels at finding the needle in the haystack.",
+            verbose=self.verbose,
+            llm=self.llm_config
+        )
+    
+    def create_coordinator_agent(self) -> Agent:
+        """Create the coordinator agent."""
+        return Agent(
+            name="Operations Coordinator",
+            role="Inventory Operations Coordinator",
+            goal="Coordinate the inventory optimization process and synthesize insights",
+            backstory="A seasoned supply chain manager who excels at integrating cross-functional insights and making balanced decisions.",
+            verbose=self.verbose,
+            llm=self.llm_config
+        )
+
+
 class InventoryAgentFactory:
     """Factory class for creating specialized inventory optimization agents."""
     

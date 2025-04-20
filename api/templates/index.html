@@ -1,26 +1,405 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Inventory Optimization API</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Optimization System</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        h1, h2 { color: #2c3e50; }
-        code { background-color: #f8f9fa; padding: 2px 4px; border-radius: 3px; }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1 {
+            margin-top: 0;
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .button {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+        .button:hover {
+            background-color: #2980b9;
+            text-decoration: none;
+        }
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #777;
+            font-size: 14px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .file-upload {
+            border: 2px dashed #3498db;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+        .submit-btn {
+            background-color: #27ae60;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .submit-btn:hover {
+            background-color: #219653;
+        }
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .upload-area.dragover {
+            background-color: #f8f9fa;
+            border-color: #0d6efd;
+        }
+        #fileName {
+            margin-top: 10px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-    <h1>Inventory Optimization API</h1>
-    <p>Welcome to the Multi-AI Agent Inventory Optimization System API.</p>
-    
-    <h2>Available Endpoints:</h2>
-    <ul>
-        <li><code>/reports/inventory-status</code> - Generate inventory status reports</li>
-        <li><code>/reports/forecast</code> - Generate forecast reports</li>
-        <li><code>/reports/policy-evaluation</code> - Generate policy evaluation reports</li>
-        <li><code>/reports/supply-chain</code> - Generate supply chain performance reports</li>
-        <li><code>/reports/dashboard</code> - Generate interactive dashboard</li>
-    </ul>
-    
-    <p>Use the reporting client to interact with this API.</p>
+    <div class="header">
+        <h1>Inventory Optimization System</h1>
+        <p>Machine Learning-Powered Inventory Management</p>
+    </div>
+
+    <div class="card">
+        <h2>Welcome to the Inventory Optimization API</h2>
+        <p>This API provides endpoints for demand forecasting, inventory optimization, and reporting.</p>
+        <a href="/docs" class="button">API Documentation</a>
+        <a href="/redoc" class="button">ReDoc Documentation</a>
+    </div>
+
+    <div class="card">
+        <h2>Quick Links</h2>
+        <ul>
+            <li><a href="/health">API Health Check</a></li>
+            <li><a href="/files">List Available Files</a></li>
+        </ul>
+    </div>
+
+    <div class="mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Upload Data Files</h5>
+            </div>
+            <div class="card-body">
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="fileType" class="form-label">File Type</label>
+                        <select class="form-select" id="fileType" name="file_type" required>
+                            <option value="" selected disabled>Select file type</option>
+                            <option value="inventory">Inventory Data</option>
+                            <option value="demand">Demand Data</option>
+                            <option value="product">Product Data</option>
+                            <option value="location">Location Data</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fileUpload" class="form-label">Select File (CSV format)</label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" id="fileUpload" name="file" accept=".csv" required>
+                            <button class="btn btn-primary" type="submit">Upload</button>
+                        </div>
+                    </div>
+                    <div class="upload-area" id="uploadArea">
+                        <p>Drag and drop your CSV file here</p>
+                        <div id="fileName"></div>
+                    </div>
+                </form>
+                <div class="mt-3" id="uploadStatus"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Uploaded Files -->
+    <div class="mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Uploaded Files</h5>
+                <button id="refreshFileList" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="fileList" class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Filename</th>
+                                <th>Type</th>
+                                <th>Rows</th>
+                                <th>Size</th>
+                                <th>Uploaded</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fileListBody">
+                            <tr>
+                                <td colspan="6" class="text-center">Loading files...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Getting Started</h2>
+        <p>To use this API, you typically need to:</p>
+        <ol>
+            <li>Upload your inventory data files</li>
+            <li>Generate forecasts for your products</li>
+            <li>Create inventory optimization reports</li>
+            <li>View and download results</li>
+        </ol>
+        <p>Check the API documentation for detailed information about each endpoint.</p>
+    </div>
+
+    <div class="footer">
+        <p>Multi-Agent Inventory Optimization System &copy; 2025</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadForm = document.getElementById('uploadForm');
+            const fileUpload = document.getElementById('fileUpload');
+            const fileName = document.getElementById('fileName');
+            const uploadStatus = document.getElementById('uploadStatus');
+            const uploadArea = document.getElementById('uploadArea');
+
+            // Handle file selection
+            fileUpload.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    fileName.textContent = this.files[0].name;
+                }
+            });
+
+            // Handle drag and drop
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', function() {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                if (e.dataTransfer.files.length > 0) {
+                    fileUpload.files = e.dataTransfer.files;
+                    fileName.textContent = e.dataTransfer.files[0].name;
+                }
+            });
+
+            // Handle form submission
+            uploadForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const fileTypeSelect = document.getElementById('fileType');
+                if (!fileTypeSelect.value) {
+                    uploadStatus.innerHTML = '<div class="alert alert-danger">Please select a file type</div>';
+                    return;
+                }
+                
+                if (!fileUpload.files || fileUpload.files.length === 0) {
+                    uploadStatus.innerHTML = '<div class="alert alert-danger">Please select a file to upload</div>';
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('file', fileUpload.files[0]);
+                formData.append('file_type', fileTypeSelect.value);
+                
+                uploadStatus.innerHTML = '<div class="alert alert-info">Uploading...</div>';
+                
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(err.detail || 'Upload failed');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    uploadStatus.innerHTML = `
+                        <div class="alert alert-success">
+                            Upload successful! File: ${data.filename}<br>
+                            Rows: ${data.rows}, Columns: ${data.columns.join(', ')}
+                        </div>`;
+                    // Refresh file list if that function exists
+                    if (typeof refreshFileList === 'function') {
+                        refreshFileList();
+                    }
+                })
+                .catch(error => {
+                    uploadStatus.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+                });
+            });
+
+            // File list functionality
+            const refreshFileListBtn = document.getElementById('refreshFileList');
+            refreshFileListBtn.addEventListener('click', refreshFileList);
+            
+            // Initial file list load
+            refreshFileList();
+            
+            // Function to refresh file list
+            function refreshFileList() {
+                const fileListBody = document.getElementById('fileListBody');
+                fileListBody.innerHTML = '<tr><td colspan="6" class="text-center">Loading files...</td></tr>';
+                
+                fetch('/files')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch file list');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (!data.files || data.files.length === 0) {
+                            fileListBody.innerHTML = '<tr><td colspan="6" class="text-center">No files uploaded yet</td></tr>';
+                            return;
+                        }
+                        
+                        fileListBody.innerHTML = '';
+                        data.files.forEach(file => {
+                            // Determine file type from filename prefix if available
+                            let fileType = 'Unknown';
+                            if (file.filename.includes('_')) {
+                                fileType = file.filename.split('_')[0].charAt(0).toUpperCase() + file.filename.split('_')[0].slice(1);
+                            }
+                            
+                            // Format file size
+                            const fileSize = formatFileSize(file.size_bytes);
+                            
+                            // Format upload time
+                            const uploadTime = new Date(file.upload_time * 1000).toLocaleString();
+                            
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${file.filename}</td>
+                                <td>${fileType}</td>
+                                <td>${file.rows || 'N/A'}</td>
+                                <td>${fileSize}</td>
+                                <td>${uploadTime}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button class="btn btn-outline-primary" onclick="useFile('${file.filename}')">Use</button>
+                                        <button class="btn btn-outline-danger" onclick="deleteFile('${file.filename}')">Delete</button>
+                                    </div>
+                                </td>
+                            `;
+                            fileListBody.appendChild(row);
+                        });
+                    })
+                    .catch(error => {
+                        fileListBody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Error: ${error.message}</td></tr>`;
+                    });
+            }
+            
+            // Format file size in KB, MB, etc.
+            function formatFileSize(bytes) {
+                if (bytes < 1024) return bytes + ' B';
+                else if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+                else if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+                else return (bytes / (1024 * 1024 * 1024)).toFixed(1) + ' GB';
+            }
+            
+            // Make the function available globally
+            window.refreshFileList = refreshFileList;
+            
+            // Function to use file for operations
+            window.useFile = function(filename) {
+                // Populate form fields with this filename
+                const fileTypeMatch = filename.match(/^([a-z]+)_/);
+                if (fileTypeMatch) {
+                    const fileType = fileTypeMatch[1];
+                    // TODO: Populate any form that needs this file
+                    alert(`Selected file: ${filename} of type ${fileType}`);
+                } else {
+                    alert(`Selected file: ${filename}`);
+                }
+            };
+            
+            // Function to delete file (add this feature if needed)
+            window.deleteFile = function(filename) {
+                if (confirm(`Are you sure you want to delete ${filename}?`)) {
+                    // TODO: Add API endpoint for file deletion
+                    alert('File deletion not implemented yet');
+                }
+            };
+        });
+    </script>
 </body>
 </html> 

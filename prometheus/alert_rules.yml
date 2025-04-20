@@ -1,0 +1,83 @@
+groups:
+  - name: inventory_alerts
+    rules:
+      - alert: HighAPILatency
+        expr: histogram_quantile(0.95, sum(rate(api_request_duration_seconds_bucket[5m])) by (le, endpoint)) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High API latency detected"
+          description: "95th percentile latency for {{ $labels.endpoint }} is above 1s"
+
+      - alert: InventoryAPIDown
+        expr: up{job="inventory-optimization-api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Inventory API is down"
+          description: "The Inventory Optimization API is not responding for more than 1 minute"
+
+      - alert: HighTaskFailureRate
+        expr: sum(increase(task_failed_total[15m])) / sum(increase(task_started_total[15m])) > 0.1
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High Celery task failure rate"
+          description: "More than 10% of Celery tasks are failing"
+
+      - alert: InventoryBelowSafetyStock
+        expr: inventory_alerts_total{alert_type="BELOW_SAFETY_STOCK"} > 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Inventory below safety stock"
+          description: "Product {{ $labels.product_id }} inventory is below safety stock level"
+
+      - alert: StockoutDetected
+        expr: inventory_alerts_total{alert_type="STOCKOUT"} > 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Stockout detected"
+          description: "Product {{ $labels.product_id }} is out of stock"
+
+      - alert: ForecastAccuracyDrop
+        expr: avg(forecast_accuracy{metric="r2"}) by (model_type) < 0.5
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "Forecast accuracy has dropped"
+          description: "{{ $labels.model_type }} model's R² metric is below 0.5"
+
+      - alert: RabbitMQDown
+        expr: up{job="rabbitmq"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "RabbitMQ is down"
+          description: "The RabbitMQ message broker is not responding"
+
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Redis is down"
+          description: "The Redis cache and broker is not responding"
+
+      - alert: PostgresDown
+        expr: up{job="postgres"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PostgreSQL is down"
+          description: "The PostgreSQL database is not responding" 
